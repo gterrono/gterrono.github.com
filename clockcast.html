@@ -87,7 +87,7 @@ limitations under the License.
         window.castReceiverManager = null;
         window.mediaManager = null;
         window.messageBus = null;
-        window.mediaElement = null;
+        window.audio = null;
         window.mediaHost = null;
         window.mediaProtocol = null;
         window.mediaPlayer = null;
@@ -99,7 +99,7 @@ limitations under the License.
 
         // Initialize the receiver SDK before starting the app-specific logic
 
-        window.mediaElement = document.getElementById('audio');
+        window.audio = document.getElementById('audio');
 
         console.log('### Application Loaded. Starting system.');
         setHudMessage('applicationState','Loaded. Starting up.');
@@ -177,7 +177,9 @@ limitations under the License.
 
         var alarmMessageBus = castReceiverManager.getCastMessageBus("urn:x-cast:com.clockcast.alarm");
         alarmMessageBus.onMessage = function(event) {
-          debugger
+          if (event.data === "stop") {
+            audio.pause();
+          }
         };
 
         /**
@@ -201,11 +203,11 @@ limitations under the License.
             /** check if visible and pause media if not - add a timer to tear down after a period of time
                if visibilty does not change back **/
             if (event.isVisible) { // It is visible
-                window.mediaElement.play(); // Resume media playback
+                window.audio.play(); // Resume media playback
                 window.clearTimeout(window.timeout); // Turn off the timeout
                 window.timeout = null;
             } else {
-                window.mediaElement.pause(); // Pause playback
+                window.audio.pause(); // Pause playback
                 window.timeout = window.setTimeout(function(){window.close();}, 600000); // 10 Minute timeout
             }
         }
