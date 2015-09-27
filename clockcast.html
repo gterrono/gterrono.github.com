@@ -20,32 +20,18 @@ limitations under the License.
     <!--
         Cast APIs
     -->
-    <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
+    <script type="text/javascript" src="http://www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
     <!--
         Cast Media Library
     -->
-    <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/mediaplayer/0.7.0/media_player.js"></script>
+    <script type="text/javascript" src="http://www.gstatic.com/cast/sdk/libs/mediaplayer/0.7.0/media_player.js"></script>
 
     <style>
         body {
             overflow:hidden;
+            background-color: #9575cd;
         }
-        video {
-            height:auto;
-            width:100%;
-            text-align: center;
-            border:0px solid silver;
-            display: table-cell;
-            vertical-align: middle;
-            color: #FFFFFF;
-            background-color: #000000;
-            font-weight: bold;
-            font-family: Verdana, Geneva, sans-serif;
-            font-size:40px;
-            float:left;
-            z-index: 1;
-            position:absolute;
-        }
+
         #messages {
             color: #FFFFFF;
             float: left;
@@ -56,10 +42,22 @@ limitations under the License.
             font-weight: bold;
             width:1000PX;
             background-color: rgba(0,0,0,0.5);
+            display: none;
         }
 
         #messages span {
             font-weight: normal;
+        }
+
+        #clock {
+            color: #FFFFFF;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 128px;
+            margin-left: -211px;
+            margin-top: -73.5px;
+            font-family: HelveticaNeue-light;
         }
     </style>
 </head>
@@ -77,6 +75,9 @@ limitations under the License.
         <div>Media Type: <span id="mediaType">Unkown</span></div>
         <div>Media Protocol: <span id="mediaProtocol">Unknown</span></div>
     </div>
+    <div id="clock">
+
+    </div>
     <audio id="audio" autoplay loop>
       <source src="http://pennapps-sinatra.herokuapp.com/rands.mp3" type="audio/mpeg">
     </audio>
@@ -92,6 +93,7 @@ limitations under the License.
         window.mediaProtocol = null;
         window.mediaPlayer = null;
         window.connectedCastSenders = []; // {senderId:'', channel:obj}
+        window.clock = null;
 
         function setHudMessage(elementId, message) {
             document.getElementById(elementId).innerHTML = '' + JSON.stringify(message);
@@ -271,6 +273,19 @@ limitations under the License.
         window.castReceiverManager.start(appConfig);
 
         // Add your app logic here after the receiver SDK has been initialized.
+
+        window.clock = document.getElementById('clock');
+
+        window.updateClock = function() {
+          var date = new Date();
+          var timeAndPM = date.toLocaleTimeString().split(" ");
+          var timeParts = timeAndPM[0].split(":");
+          clock.textContent = timeParts[0] + ":" + timeParts[1] + " " + timeAndPM[1].toLowerCase();
+        };
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
     </script>
 </body>
 </html>
