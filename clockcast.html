@@ -278,9 +278,15 @@ limitations under the License.
 
         window.updateClock = function() {
           var date = new Date();
-          var timeAndPM = date.toLocaleTimeString().split(" ");
-          var timeParts = timeAndPM[0].split(":");
-          clock.textContent = timeParts[0] + ":" + timeParts[1] + " " + timeAndPM[1].toLowerCase();
+          var hours = date.getHours(), minutes = date.getMinutes(), pm = false;
+          if (hours > 11) {
+            hours -= 12;
+            pm = true;
+          }
+          if (hours === 0) {
+            hours = 12;
+          }
+          clock.textContent = hours + ":" + minutes + " " + (pm ? "pm" : "am");
         };
 
         updateClock();
