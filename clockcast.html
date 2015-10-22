@@ -78,9 +78,6 @@ limitations under the License.
     <div id="clock">
 
     </div>
-    <audio id="audio" autoplay loop>
-      <source src="http://pennapps-sinatra.herokuapp.com/rands.mp3" type="audio/mpeg">
-    </audio>
 
     <script type="text/javascript">
         "use strict";
@@ -101,7 +98,6 @@ limitations under the License.
 
         // Initialize the receiver SDK before starting the app-specific logic
 
-        window.audio = document.getElementById('audio');
 
         console.log('### Application Loaded. Starting system.');
         setHudMessage('applicationState','Loaded. Starting up.');
@@ -177,10 +173,24 @@ limitations under the License.
               window.close();
         }
 
+        var addNewAudio = function(url) {
+          audio = new Audio();
+          audio.loop = true;
+          audio.innerHTML = '<source src="' + url + '" type="audio/mpeg">';
+          audio.play();
+        };
+
         var alarmMessageBus = castReceiverManager.getCastMessageBus("urn:x-cast:com.clockcast.alarm");
         alarmMessageBus.onMessage = function(event) {
           if (event.data === "stop") {
             audio.pause();
+            return;
+          }
+          window.data = JSON.parse(event.data);
+          if (data.type === 0) {
+            addNewAudio("http://terrono.com/firepage.mp3");
+          } else if (data.type === 1) {
+            addNewAudio(data.typeExtra);
           }
         };
 
@@ -205,7 +215,7 @@ limitations under the License.
             /** check if visible and pause media if not - add a timer to tear down after a period of time
                if visibilty does not change back **/
             if (event.isVisible) { // It is visible
-                window.audio.play(); // Resume media playback
+                //window.audio.play(); // Resume media playback
                 window.clearTimeout(window.timeout); // Turn off the timeout
                 window.timeout = null;
             } else {
@@ -285,6 +295,9 @@ limitations under the License.
           }
           if (hours === 0) {
             hours = 12;
+          }
+          if (minutes < 10) {
+            minutes = "0" + minutes;
           }
           clock.textContent = hours + ":" + minutes + " " + (pm ? "pm" : "am");
         };
